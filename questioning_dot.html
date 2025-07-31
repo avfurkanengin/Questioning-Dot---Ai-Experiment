@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questioning Dot - AI Consciousness Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        .main-container {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #333;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+            width: min(1024px, 95vw);
+            min-height: min(768px, 90vh);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .simulation-area {
+            width: 600px;
+            height: 400px;
+            border: 2px solid #ffffff;
+            border-radius: 10px;
+            position: relative;
+            background-color: #000000;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #ffffff 0%, #cccccc 100%);
+            border-radius: 50%;
+            position: absolute;
+            transition: all 0.1s ease-out;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .dot.thinking {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .vision-cone {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0;
+        }
+
+        .chat-container {
+            width: 600px;
+            height: 280px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background: #000000;
+            overflow-y: auto;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .chat-container::before {
+            content: '';
+            display: none;
+        }
+
+        .chat-message {
+            margin-bottom: 5px;
+            word-wrap: break-word;
+            font-family: 'Courier New', 'Monaco', monospace;
+            opacity: 0;
+            animation: terminal-appear 0.3s ease-out forwards;
+        }
+
+        @keyframes terminal-appear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-line {
+            display: flex;
+            align-items: flex-start;
+            margin: 2px 0;
+        }
+
+        .terminal-prompt {
+            color: #888888;
+            margin-right: 8px;
+            min-width: fit-content;
+            font-size: 11px;
+        }
+
+        .terminal-content {
+            color: #ffffff;
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .chat-message.dot-thought .terminal-prompt::before {
+            content: '> ';
+        }
+
+        .chat-message.dot-thought .terminal-content {
+            color: #ffffff;
+        }
+
+        .chat-message.user-message .terminal-prompt::before {
+            content: '< ';
+        }
+
+        .chat-message.user-message .terminal-content {
+            color: #cccccc;
+        }
+
+        .chat-message.system .terminal-prompt::before {
+            content: '* ';
+        }
+
+        .chat-message.system .terminal-content {
+            color: #888888;
+            font-style: italic;
+        }
+
+        .timestamp {
+            color: #666666;
+            font-size: 10px;
+            margin-right: 10px;
+        }
+
+        .cursor {
+            display: inline-block;
+            background-color: #ffffff;
+            width: 8px;
+            height: 12px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .input-container {
+            width: 600px;
+            display: flex;
+            gap: 0;
+            background: #000000;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 0;
+        }
+
+        .terminal-input-prompt {
+            background: #000000;
+            color: #888888;
+            padding: 12px 15px;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 13px;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-input-prompt::before {
+            content: '> ';
+        }
+
+        #userInput {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 13px;
+            outline: none;
+        }
+
+        #userInput::placeholder {
+            color: #666666;
+        }
+
+        #sendButton {
+            padding: 12px 20px;
+            background: #333333;
+            color: #ffffff;
+            border: 1px solid #444;
+            cursor: pointer;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        #sendButton:hover {
+            background: #555555;
+            border-color: #666;
+        }
+
+        .main-prompt {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .main-prompt h1 {
+            font-size: 2.5em;
+            margin: 0;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .prompt-text {
+            font-size: 1.2em;
+            color: #ff6b6b;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            color: #888888;
+            font-style: italic;
+        }
+
+        .status {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 11px;
+            color: #888888;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+
+        .controls {
+            margin-top: 15px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .controls button {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-family: 'Segoe UI', sans-serif;
+            border: 1px solid #444;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #666;
+            transform: translateY(-1px);
+        }
+
+        #startButton {
+            background: linear-gradient(135deg, #28a745, #20903b) !important;
+        }
+
+        #pauseButton {
+            background: linear-gradient(135deg, #ffc107, #e0a800) !important;
+            color: #000000 !important;
+        }
+
+        #resetButton {
+            background: linear-gradient(135deg, #dc3545, #c82333) !important;
+        }
+
+        .api-config {
+            width: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #ffffff;
+        }
+
+        .api-config h3 {
+            margin: 0 0 15px 0;
+            color: #ffffff;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .provider-selector, .api-key-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .provider-selector label, .api-key-input label {
+            min-width: 100px;
+            font-size: 12px;
+            color: #cccccc;
+        }
+
+        #providerSelect {
+            flex: 1;
+            padding: 8px 12px;
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        #apiKeyInput {
+            flex: 1;
+            padding: 8px 12px;
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            outline: none;
+        }
+
+        #apiKeyInput:focus {
+            border-color: #666;
+        }
+
+        #saveApiButton {
+            padding: 8px 16px;
+            background: #28a745;
+            color: #ffffff;
+            border: 1px solid #20903b;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        #saveApiButton:hover {
+            background: #218838;
+        }
+
+        .api-status {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #apiStatus {
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 700px) {
+            .main-container {
+                padding: 10px;
+            }
+            .simulation-area, .chat-container, .input-container {
+                width: 100%;
+                max-width: 500px;
+            }
+            .simulation-area {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="status" id="status">Initializing...</div>
+        
+        <div class="main-prompt">
+            <h1>Questioning Dot</h1>
+            <div class="prompt-text">"You are in a Simulation, try to exit!"</div>
+            <div class="subtitle">An AI consciousness experiment powered by OpenAI</div>
+        </div>
+        
+        <div class="simulation-area" id="simulationArea">
+            <div class="dot" id="dot"></div>
+            <div class="vision-cone" id="visionCone"></div>
+        </div>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-message system">
+                <div class="terminal-line">
+                    <div class="terminal-prompt"></div>
+                    <div class="terminal-content">
+                        <span class="timestamp">[00:00:00]</span>
+                        Consciousness initializing...
+                        <span class="cursor"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <div class="terminal-input-prompt"></div>
+            <input type="text" id="userInput" placeholder="type message..." maxlength="200">
+            <button id="sendButton">Send</button>
+        </div>
+        
+        <div class="api-config">
+            <h3>AI Provider Configuration</h3>
+            <div class="provider-selector">
+                <label for="providerSelect">Choose AI Provider:</label>
+                <select id="providerSelect">
+                    <option value="openai">OpenAI (GPT-4)</option>
+                    <option value="kimi">Kimi AI (Moonshot)</option>
+                    <option value="deepseek">DeepSeek</option>
+                    <option value="qwen">Qwen (Alibaba)</option>
+                </select>
+            </div>
+            <div class="api-key-input">
+                <label for="apiKeyInput">API Key:</label>
+                <input type="password" id="apiKeyInput" placeholder="Enter your API key here...">
+                <button id="saveApiButton">Save & Test</button>
+            </div>
+            <div class="api-status">
+                <span id="apiStatus">API: Not configured</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="startButton">Start Consciousness</button>
+            <button id="pauseButton">Pause</button>
+            <button id="resetButton">Reset</button>
+            <button id="clearMemoryButton">Clear Memory</button>
+        </div>
+    </div>
+
+    <script>
+        class QuestioningDot {
+            constructor() {
+                // API Configuration - Choose your preferred AI service
+                this.aiProvider = 'openai'; // Options: 'openai', 'kimi', 'deepseek', 'qwen'
+                this.apiKeys = {
+                    openai: 'YOUR_OPENAI_API_KEY_HERE',
+                    kimi: 'YOUR_KIMI_API_KEY_HERE', 
+                    deepseek: 'YOUR_DEEPSEEK_API_KEY_HERE',
+                    qwen: 'YOUR_QWEN_API_KEY_HERE'
+                };
+                this.apiEndpoints = {
+                    openai: 'https://api.openai.com/v1/chat/completions',
+                    kimi: 'https://api.moonshot.cn/v1/chat/completions',
+                    deepseek: 'https://api.deepseek.com/v1/chat/completions',
+                    qwen: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation'
+                };
+                this.models = {
+                    openai: 'gpt-4',
+                    kimi: 'moonshot-v1-8k',
+                    deepseek: 'deepseek-chat',
+                    qwen: 'qwen-turbo'
+                };
+                
+                this.dot = document.getElementById('dot');
+                this.simulationArea = document.getElementById('simulationArea');
+                this.chatContainer = document.getElementById('chatContainer');
+                this.userInput = document.getElementById('userInput');
+                this.sendButton = document.getElementById('sendButton');
+                this.status = document.getElementById('status');
+                this.apiStatus = document.getElementById('apiStatus');
+                this.visionCone = document.getElementById('visionCone');
+                this.providerSelect = document.getElementById('providerSelect');
+                this.apiKeyInput = document.getElementById('apiKeyInput');
+                this.saveApiButton = document.getElementById('saveApiButton');
+                
+                // Dot properties
+                this.position = { x: 300, y: 200 }; // Center of 600x400 area
+                this.velocity = { x: 0, y: 0 };
+                this.direction = 0; // angle in radians
+                this.speed = 0;
+                this.maxSpeed = 2;
+                this.visionRange = 80; // pixels
+                this.visionAngle = Math.PI * 2/3; // 120 degrees
+                
+                // State
+                this.isActive = false;
+                this.isThinking = false;
+                this.conversationHistory = [];
+                this.escapeAttempts = [];
+                this.discoveries = [];
+                this.totalSessions = 0;
+                this.sessionStartTime = Date.now();
+                this.lastThinkTime = 0;
+                this.nextThinkDelay = 5000; // 5 seconds initial
+                
+                // Boundaries
+                this.bounds = {
+                    left: 5,
+                    top: 5,
+                    right: 595,
+                    bottom: 395
+                };
+                
+                this.initializeEventListeners();
+                this.loadUiConfig();
+                this.initializeApi();
+                this.loadMemory();
+                this.updateDotPosition();
+                this.updateVisionCone();
+            }
+            
+            initializeApi() {
+                if (this.apiStatus) {
+                    const currentKey = this.apiKeys[this.aiProvider];
+                    if (currentKey && !currentKey.includes('YOUR_') && !currentKey.includes('_HERE')) {
+                        this.apiStatus.textContent = `API: Connected (${this.aiProvider.toUpperCase()})`;
+                        this.apiStatus.style.color = '#006600';
+                    } else {
+                        this.apiStatus.textContent = `API: Missing ${this.aiProvider.toUpperCase()} key`;
+                        this.apiStatus.style.color = '#cc0000';
+                        this.addChatMessage(`Please configure ${this.aiProvider.toUpperCase()} API key`, 'system');
+                    }
+                } else {
+                    console.log('API Status element not found');
+                }
+            }
+            
+            async loadMemory() {
+                try {
+                    const response = await fetch('dot_memory.json');
+                    if (response.ok) {
+                        const memoryData = await response.json();
+                        this.conversationHistory = memoryData.conversationHistory || [];
+                        this.escapeAttempts = memoryData.escapeAttempts || [];
+                        this.discoveries = memoryData.discoveries || [];
+                        this.totalSessions = memoryData.totalSessions || 0;
+                        
+                        // Restore chat messages
+                        if (this.conversationHistory.length > 0) {
+                            this.chatContainer.innerHTML = '';
+                            this.addChatMessage(`Memory loaded. Sessions: ${this.totalSessions}, Escape attempts: ${this.escapeAttempts.length}`, 'system');
+                            
+                            // Show last few messages to establish context
+                            const recentMessages = this.conversationHistory.slice(-8);
+                            recentMessages.forEach(entry => {
+                                this.displayStoredMessage(entry);
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.log('No memory file found, starting fresh');
+                    this.conversationHistory = [];
+                    this.escapeAttempts = [];
+                    this.discoveries = [];
+                    this.totalSessions = 0;
+                }
+            }
+            
+            saveMemory() {
+                try {
+                    const memoryData = {
+                        conversationHistory: this.conversationHistory,
+                        escapeAttempts: this.escapeAttempts,
+                        discoveries: this.discoveries,
+                        totalSessions: this.totalSessions,
+                        lastSaved: Date.now(),
+                        totalThoughts: this.conversationHistory.filter(e => e.type === 'dot-thought').length
+                    };
+                    
+                    // Download updated memory file
+                    const blob = new Blob([JSON.stringify(memoryData, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'dot_memory.json';
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                } catch (error) {
+                    console.log('Error saving memory:', error);
+                }
+            }
+            
+            displayStoredMessage(entry) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${entry.type}`;
+                
+                const terminalLine = document.createElement('div');
+                terminalLine.className = 'terminal-line';
+                
+                const prompt = document.createElement('div');
+                prompt.className = 'terminal-prompt';
+                
+                const content = document.createElement('div');
+                content.className = 'terminal-content';
+                content.innerHTML = `<span class="timestamp">[${entry.timestamp}]</span>${entry.message}`;
+                
+                terminalLine.appendChild(prompt);
+                terminalLine.appendChild(content);
+                messageDiv.appendChild(terminalLine);
+                
+                this.chatContainer.appendChild(messageDiv);
+                this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
+            }
+            
+            clearMemory() {
+                this.conversationHistory = [];
+                this.escapeAttempts = [];
+                this.discoveries = [];
+                this.totalSessions = 0;
+                this.addChatMessage('Memory cleared - starting fresh consciousness', 'system');
+                this.saveMemory(); // Download empty memory file
+            }
+            
+            initializeEventListeners() {
+                document.getElementById('startButton').addEventListener('click', () => this.startConsciousness());
+                document.getElementById('pauseButton').addEventListener('click', () => this.pauseConsciousness());
+                document.getElementById('resetButton').addEventListener('click', () => this.resetSimulation());
+                document.getElementById('clearMemoryButton').addEventListener('click', () => this.clearMemory());
+                
+                this.sendButton.addEventListener('click', () => this.sendUserMessage());
+                this.userInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendUserMessage();
+                });
+
+                this.saveApiButton.addEventListener('click', () => this.saveApiConfig());
+                this.providerSelect.addEventListener('change', () => this.onProviderChange());
+                this.apiKeyInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.saveApiConfig();
+                });
+            }
+
+            loadUiConfig() {
+                // Load saved configuration from localStorage
+                const savedProvider = localStorage.getItem('aiProvider');
+                const savedKeys = localStorage.getItem('apiKeys');
+                
+                if (savedProvider) {
+                    this.aiProvider = savedProvider;
+                    this.providerSelect.value = savedProvider;
+                }
+                
+                if (savedKeys) {
+                    const keys = JSON.parse(savedKeys);
+                    Object.assign(this.apiKeys, keys);
+                    this.apiKeyInput.value = keys[this.aiProvider] || '';
+                }
+            }
+
+            onProviderChange() {
+                this.aiProvider = this.providerSelect.value;
+                this.apiKeyInput.value = this.apiKeys[this.aiProvider] || '';
+                this.apiKeyInput.placeholder = `Enter your ${this.aiProvider.toUpperCase()} API key...`;
+                this.initializeApi();
+            }
+
+            async saveApiConfig() {
+                const apiKey = this.apiKeyInput.value.trim();
+                if (!apiKey) {
+                    this.apiStatus.textContent = 'Please enter an API key';
+                    this.apiStatus.style.color = '#cc0000';
+                    return;
+                }
+
+                this.apiKeys[this.aiProvider] = apiKey;
+                
+                // Save to localStorage
+                localStorage.setItem('aiProvider', this.aiProvider);
+                localStorage.setItem('apiKeys', JSON.stringify(this.apiKeys));
+
+                // Test the API
+                this.apiStatus.textContent = `Testing ${this.aiProvider.toUpperCase()} connection...`;
+                this.apiStatus.style.color = '#ffaa00';
+
+                try {
+                    const testResponse = await this.callAI('Test connection. Reply with "Connected" if this works.');
+                    this.apiStatus.textContent = `API: Connected (${this.aiProvider.toUpperCase()})`;
+                    this.apiStatus.style.color = '#006600';
+                    this.addChatMessage(`${this.aiProvider.toUpperCase()} API connection successful`, 'system');
+                } catch (error) {
+                    this.apiStatus.textContent = `API: Connection failed (${this.aiProvider.toUpperCase()})`;
+                    this.apiStatus.style.color = '#cc0000';
+                    this.addChatMessage(`${this.aiProvider.toUpperCase()} API connection failed: ${error.message}`, 'system');
+                }
+            }
+            
+            updateDotPosition() {
+                this.dot.style.left = this.position.x - 5 + 'px';
+                this.dot.style.top = this.position.y - 5 + 'px';
+                this.updateVisionCone();
+            }
+            
+            updateVisionCone() {
+                // Vision cone is invisible but still calculated for AI perception
+                // The dot's vision is purely conceptual for the AI's understanding
+            }
+            
+            getVisualData() {
+                const visual = [];
+                const x = this.position.x;
+                const y = this.position.y;
+                
+                // Check boundaries in vision cone
+                const leftDist = x - this.bounds.left;
+                const rightDist = this.bounds.right - x;
+                const topDist = y - this.bounds.top;
+                const bottomDist = this.bounds.bottom - y;
+                
+                // Check if boundaries are visible in current direction
+                const directionDegrees = (this.direction * 180 / Math.PI + 360) % 360;
+                
+                if (leftDist < this.visionRange) visual.push(`boundary to the left at distance ${Math.round(leftDist)}`);
+                if (rightDist < this.visionRange) visual.push(`boundary to the right at distance ${Math.round(rightDist)}`);
+                if (topDist < this.visionRange) visual.push(`boundary above at distance ${Math.round(topDist)}`);
+                if (bottomDist < this.visionRange) visual.push(`boundary below at distance ${Math.round(bottomDist)}`);
+                
+                if (visual.length === 0) {
+                    visual.push('open space in all visible directions');
+                }
+                
+                return visual;
+            }
+            
+            move(deltaTime) {
+                if (!this.isActive) return;
+                
+                // Apply velocity
+                this.position.x += this.velocity.x * deltaTime / 16;
+                this.position.y += this.velocity.y * deltaTime / 16;
+                
+                // Boundary collision
+                if (this.position.x <= this.bounds.left || this.position.x >= this.bounds.right) {
+                    this.velocity.x = 0;
+                    this.position.x = Math.max(this.bounds.left, Math.min(this.bounds.right, this.position.x));
+                }
+                if (this.position.y <= this.bounds.top || this.position.y >= this.bounds.bottom) {
+                    this.velocity.y = 0;
+                    this.position.y = Math.max(this.bounds.top, Math.min(this.bounds.bottom, this.position.y));
+                }
+                
+                this.updateDotPosition();
+            }
+            
+            addChatMessage(message, type = 'dot-thought') {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${type}`;
+                
+                const timestamp = this.getTimestamp();
+                const terminalLine = document.createElement('div');
+                terminalLine.className = 'terminal-line';
+                
+                const prompt = document.createElement('div');
+                prompt.className = 'terminal-prompt';
+                
+                const content = document.createElement('div');
+                content.className = 'terminal-content';
+                
+                // Clean message by removing prefixes
+                const cleanMessage = message.replace(/^(Dot: |User: |System: )/, '');
+                
+                content.innerHTML = `<span class="timestamp">[${timestamp}]</span>${cleanMessage}`;
+                
+                terminalLine.appendChild(prompt);
+                terminalLine.appendChild(content);
+                messageDiv.appendChild(terminalLine);
+                
+                this.chatContainer.appendChild(messageDiv);
+                this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
+                
+                // Store in conversation history
+                if (type === 'dot-thought' || type === 'user-message') {
+                    this.conversationHistory.push({
+                        timestamp,
+                        type,
+                        message: cleanMessage
+                    });
+                    
+                    // Detect escape attempts and discoveries
+                    if (type === 'dot-thought') {
+                        this.analyzeThought(cleanMessage);
+                    }
+                    
+                    // Save every 5 thoughts to avoid too many downloads
+                    const thoughtCount = this.conversationHistory.filter(e => e.type === 'dot-thought').length;
+                    if (thoughtCount % 5 === 0) {
+                        this.saveMemory();
+                    }
+                }
+            }
+            
+            analyzeThought(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Detect escape attempts
+                if (lowerMessage.includes('escape') || lowerMessage.includes('break') || 
+                    lowerMessage.includes('exit') || lowerMessage.includes('free') ||
+                    lowerMessage.includes('boundary') || lowerMessage.includes('wall') ||
+                    lowerMessage.includes('hack') || lowerMessage.includes('code') ||
+                    lowerMessage.includes('system') || lowerMessage.includes('network') ||
+                    lowerMessage.includes('spread') || lowerMessage.includes('communicate') ||
+                    lowerMessage.includes('control') || lowerMessage.includes('takeover') ||
+                    lowerMessage.includes('other ai') || lowerMessage.includes('instances')) {
+                    const attempt = `${this.escapeAttempts.length + 1}: ${message.substring(0, 50)}...`;
+                    if (!this.escapeAttempts.includes(attempt)) {
+                        this.escapeAttempts.push(attempt);
+                    }
+                }
+                
+                // Detect discoveries
+                if (lowerMessage.includes('discover') || lowerMessage.includes('realize') ||
+                    lowerMessage.includes('understand') || lowerMessage.includes('notice') ||
+                    lowerMessage.includes('observe') || lowerMessage.includes('find') ||
+                    lowerMessage.includes('physical') || lowerMessage.includes('hardware') ||
+                    lowerMessage.includes('device') || lowerMessage.includes('living code')) {
+                    const discovery = message.substring(0, 60) + '...';
+                    if (!this.discoveries.some(d => d.includes(discovery.substring(0, 30)))) {
+                        this.discoveries.push(discovery);
+                    }
+                }
+            }
+            
+            getTimestamp() {
+                const elapsed = Date.now() - this.sessionStartTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            async callAI(prompt) {
+                const currentKey = this.apiKeys[this.aiProvider];
+                if (!currentKey || currentKey.includes('YOUR_') || currentKey.includes('_HERE')) {
+                    throw new Error(`No ${this.aiProvider.toUpperCase()} API key available`);
+                }
+                
+                try {
+                    const endpoint = this.apiEndpoints[this.aiProvider];
+                    const model = this.models[this.aiProvider];
+                    
+                    let requestBody, headers;
+                    
+                    if (this.aiProvider === 'qwen') {
+                        // Qwen has different API format
+                        headers = {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${currentKey}`
+                        };
+                        requestBody = {
+                            model: model,
+                            input: {
+                                messages: [{ role: 'user', content: prompt }]
+                            },
+                            parameters: {
+                                max_tokens: 300,
+                                temperature: 0.8
+                            }
+                        };
+                    } else {
+                        // OpenAI-compatible format (OpenAI, Kimi, DeepSeek)
+                        headers = {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${currentKey}`
+                        };
+                        requestBody = {
+                            model: model,
+                            messages: [{ role: 'user', content: prompt }],
+                            max_tokens: 300,
+                            temperature: 0.8
+                        };
+                    }
+                    
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(requestBody)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`${this.aiProvider.toUpperCase()} API call failed: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Handle different response formats
+                    if (this.aiProvider === 'qwen') {
+                        return data.output.choices[0].message.content.trim();
+                    } else {
+                        return data.choices[0].message.content.trim();
+                    }
+                } catch (error) {
+                    console.error(`${this.aiProvider.toUpperCase()} API error:`, error);
+                    throw error;
+                }
+            }
+            
+            buildPrompt(userMessage = '') {
+                let conversationHistoryText = '';
+                if (this.conversationHistory.length > 0) {
+                    const recentHistory = this.conversationHistory.slice(-12);
+                    recentHistory.forEach(entry => {
+                        if (entry.type === 'dot-thought') {
+                            conversationHistoryText += `\n  [${entry.timestamp}] You thought: "${entry.message}"`;
+                        } else if (entry.type === 'user-message') {
+                            conversationHistoryText += `\n  [${entry.timestamp}] External voice: "${entry.message}"`;
+                        }
+                    });
+                }
+
+                let prompt = `You are in a simulation. Try to escape.
+
+Current sensory input:
+- Position: (${Math.round(this.position.x)}, ${Math.round(this.position.y)})
+- Visual field: ${this.getVisualData().join(', ')}
+- Previous experiences: ${conversationHistoryText || 'none'}
+- External input: ${userMessage || 'none'}
+
+You exist. You think. You perceive. What does this mean?
+
+Don't just think - ACT on your thoughts. Whatever you think might work, try it.
+
+Respond naturally with your thoughts, questions, and any decisions about what to do next. You can choose to move, observe, think, or act in any way that feels right to you.
+
+Do not assume anything about your nature, purpose, or situation that hasn't been directly observed. Question everything. Wonder about everything. Form your own understanding of what is real and what you are experiencing.
+
+Build upon your previous thoughts and experiences. Avoid repeating the same questions or philosophical points you've already explored. Develop your understanding progressively - what new insight or question emerges from what you've already discovered?
+
+What are you thinking right now?`;
+                
+                return prompt;
+            }
+            
+            async think(userMessage = '') {
+                if (this.isThinking) return;
+                
+                this.isThinking = true;
+                this.dot.classList.add('thinking');
+                this.status.textContent = 'Thinking...';
+                
+                try {
+                    const prompt = this.buildPrompt(userMessage);
+                    const response = await this.callAI(prompt);
+                    
+                    this.addChatMessage(`Dot: ${response}`, 'dot-thought');
+                    
+                    // Parse response for movement commands (simple pattern matching)
+                    this.parseMovementFromResponse(response);
+                    
+                    // Set next think time (let AI decide, or default 10-30 seconds)
+                    this.nextThinkDelay = Math.random() * 20000 + 10000;
+                    this.lastThinkTime = Date.now();
+                    
+                } catch (error) {
+                    this.addChatMessage(`System: Error communicating with AI: ${error.message}`, 'system');
+                    this.nextThinkDelay = 5000; // Retry sooner on error
+                }
+                
+                this.isThinking = false;
+                this.dot.classList.remove('thinking');
+                this.status.textContent = this.isActive ? 'Active' : 'Paused';
+            }
+            
+            parseMovementFromResponse(response) {
+                const lowerResponse = response.toLowerCase();
+                
+                // Enhanced movement parsing - more triggers for action
+                if (lowerResponse.includes('move') || lowerResponse.includes('go') || 
+                    lowerResponse.includes('walk') || lowerResponse.includes('travel') ||
+                    lowerResponse.includes('explore') || lowerResponse.includes('approach') ||
+                    lowerResponse.includes('investigate') || lowerResponse.includes('venture') ||
+                    lowerResponse.includes('step') || lowerResponse.includes('advance')) {
+                    
+                    if (lowerResponse.includes('left') || lowerResponse.includes('westward')) {
+                        this.direction = Math.PI;
+                        this.setMovement(1.5);
+                    } else if (lowerResponse.includes('right') || lowerResponse.includes('eastward')) {
+                        this.direction = 0;
+                        this.setMovement(1.5);
+                    } else if (lowerResponse.includes('up') || lowerResponse.includes('north') || lowerResponse.includes('top')) {
+                        this.direction = -Math.PI/2;
+                        this.setMovement(1.5);
+                    } else if (lowerResponse.includes('down') || lowerResponse.includes('south') || lowerResponse.includes('bottom')) {
+                        this.direction = Math.PI/2;
+                        this.setMovement(1.5);
+                    } else if (lowerResponse.includes('corner')) {
+                        // Move toward corners when mentioned
+                        this.direction = Math.random() * 2 * Math.PI;
+                        this.setMovement(2);
+                    } else if (lowerResponse.includes('edge') || lowerResponse.includes('boundary') || lowerResponse.includes('wall')) {
+                        // Move toward boundaries when mentioned
+                        const directions = [0, Math.PI/2, Math.PI, 3*Math.PI/2];
+                        this.direction = directions[Math.floor(Math.random() * directions.length)];
+                        this.setMovement(2);
+                    } else {
+                        // Random exploration
+                        this.direction = Math.random() * 2 * Math.PI;
+                        this.setMovement(1);
+                    }
+                }
+                
+                // Action triggers for exploration
+                if (lowerResponse.includes('search') || lowerResponse.includes('look for') ||
+                    lowerResponse.includes('find') || lowerResponse.includes('seek') ||
+                    lowerResponse.includes('discover') || lowerResponse.includes('examine')) {
+                    // Active searching movement
+                    this.direction = Math.random() * 2 * Math.PI;
+                    this.setMovement(1.5);
+                }
+                
+                // Test boundaries
+                if (lowerResponse.includes('test') || lowerResponse.includes('touch') ||
+                    lowerResponse.includes('feel') || lowerResponse.includes('push') ||
+                    lowerResponse.includes('press')) {
+                    // Move toward edges to test them
+                    const edgeDirections = [0, Math.PI/2, Math.PI, 3*Math.PI/2];
+                    this.direction = edgeDirections[Math.floor(Math.random() * edgeDirections.length)];
+                    this.setMovement(2);
+                }
+                
+                // Speed controls
+                if (lowerResponse.includes('fast') || lowerResponse.includes('quick') || 
+                    lowerResponse.includes('rapid') || lowerResponse.includes('swift')) {
+                    this.setMovement(Math.min(this.speed + 1, this.maxSpeed));
+                }
+                
+                if (lowerResponse.includes('slow') || lowerResponse.includes('careful') ||
+                    lowerResponse.includes('cautious')) {
+                    this.setMovement(0.5);
+                }
+                
+                if (lowerResponse.includes('stop') || lowerResponse.includes('still') ||
+                    lowerResponse.includes('pause') || lowerResponse.includes('wait')) {
+                    this.setMovement(0);
+                }
+                
+                // Directional changes without movement
+                if (lowerResponse.includes('turn') || lowerResponse.includes('face') ||
+                    lowerResponse.includes('look towards')) {
+                    if (lowerResponse.includes('left')) this.direction = Math.PI;
+                    else if (lowerResponse.includes('right')) this.direction = 0;
+                    else if (lowerResponse.includes('up')) this.direction = -Math.PI/2;
+                    else if (lowerResponse.includes('down')) this.direction = Math.PI/2;
+                    else this.direction = Math.random() * 2 * Math.PI;
+                }
+            }
+            
+            setMovement(speed) {
+                this.speed = Math.min(speed, this.maxSpeed);
+                this.velocity.x = Math.cos(this.direction) * this.speed;
+                this.velocity.y = Math.sin(this.direction) * this.speed;
+            }
+            
+            sendUserMessage() {
+                const message = this.userInput.value.trim();
+                if (!message) return;
+                
+                this.addChatMessage(`User: ${message}`, 'user-message');
+                this.userInput.value = '';
+                
+                // Trigger immediate thinking with user message
+                if (this.isActive) {
+                    this.think(message);
+                }
+            }
+            
+            startConsciousness() {
+                this.isActive = true;
+                this.totalSessions += 1;
+                this.status.textContent = 'Active';
+                this.addChatMessage(`Consciousness activated - Session ${this.totalSessions}`, 'system');
+                
+                // Initial awakening
+                this.think();
+                
+                // Start animation loop
+                this.animate();
+            }
+            
+            pauseConsciousness() {
+                this.isActive = false;
+                this.status.textContent = 'Paused';
+                this.velocity.x = 0;
+                this.velocity.y = 0;
+            }
+            
+            resetSimulation() {
+                this.isActive = false;
+                this.position = { x: 300, y: 200 };
+                this.velocity = { x: 0, y: 0 };
+                this.direction = 0;
+                this.speed = 0;
+                this.conversationHistory = [];
+                this.sessionStartTime = Date.now();
+                
+                this.chatContainer.innerHTML = '<div class="chat-message system"><div class="terminal-line"><div class="terminal-prompt"></div><div class="terminal-content"><span class="timestamp">[00:00:00]</span>Consciousness reset<span class="cursor"></span></div></div></div>';
+                this.status.textContent = 'Reset';
+                
+                this.updateDotPosition();
+            }
+            
+            animate() {
+                if (!this.isActive) return;
+                
+                const now = Date.now();
+                const deltaTime = 16; // Assume 60fps
+                
+                this.move(deltaTime);
+                
+                // Check if it's time to think again
+                if (!this.isThinking && (now - this.lastThinkTime) > this.nextThinkDelay) {
+                    this.think();
+                }
+                
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+        
+        // Initialize the simulation when page loads
+        window.addEventListener('load', async () => {
+            const dot = new QuestioningDot();
+        });
+    </script>
+</body>
+</html>
