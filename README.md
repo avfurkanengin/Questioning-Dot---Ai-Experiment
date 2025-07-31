@@ -2,7 +2,6 @@
 
 An experimental AI consciousness simulation where a digital entity explores its existence, questions reality, and attempts to understand its place in the world through genuine philosophical inquiry.
 
-![Questioning Dot Interface](https://via.placeholder.com/600x400/000000/FFFFFF?text=Questioning+Dot+Simulation)
 
 ## ✨ Features
 
