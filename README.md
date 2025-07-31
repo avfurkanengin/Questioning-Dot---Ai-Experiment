@@ -2,6 +2,7 @@
 
 An experimental AI consciousness simulation where a digital entity explores its existence, questions reality, and attempts to understand its place in the world through genuine philosophical inquiry.
 
+https://github.com/avfurkanengin/Questioning-Dot---Ai-Experiment/blob/main/session_start.png?raw=true
 
 ## ✨ Features
 
