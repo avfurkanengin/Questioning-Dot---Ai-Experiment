@@ -34,7 +34,7 @@ Choose one provider and get your API key:
 - **OpenAI**: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 - **Kimi AI**: [platform.moonshot.cn](https://platform.moonshot.cn/)
 - **DeepSeek**: [platform.deepseek.com](https://platform.deepseek.com/)
-- **Qwen**: [(https://qwen.ai/apiplatform)](https://qwen.ai/apiplatform)
+- **Qwen**: [https://qwen.ai/apiplatform](https://qwen.ai/apiplatform)
 
 ### 3. Run the Application
 
